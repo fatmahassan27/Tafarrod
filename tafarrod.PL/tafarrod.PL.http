@@ -1,0 +1,6 @@
+@tafarrod.PL_HostAddress = http://localhost:5084
+
+GET {{tafarrod.PL_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
