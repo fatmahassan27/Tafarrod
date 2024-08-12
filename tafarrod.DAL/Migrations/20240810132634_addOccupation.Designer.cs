@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using tafarrod.DAL.Database;
 
@@ -11,9 +12,11 @@ using tafarrod.DAL.Database;
 namespace tafarrod.DAL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240810132634_addOccupation")]
+    partial class addOccupation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -108,12 +111,6 @@ namespace tafarrod.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Period")
-                        .HasColumnType("int");
-
-                    b.Property<long>("RecruitmentPrice")
-                        .HasColumnType("bigint");
-
                     b.HasKey("Id");
 
                     b.ToTable("Nationalities");
@@ -134,36 +131,6 @@ namespace tafarrod.DAL.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Occupations");
-                });
-
-            modelBuilder.Entity("tafarrod.DAL.Entities.Problem", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Message")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
-
-                    b.Property<string>("PhoneNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Subject")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Problems");
                 });
 
             modelBuilder.Entity("tafarrod.DAL.Entities.User", b =>
@@ -234,12 +201,15 @@ namespace tafarrod.DAL.Migrations
                     b.Property<int>("NationalityId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("OccupationId")
+                    b.Property<int>("OccupationId")
                         .HasColumnType("int");
 
                     b.Property<string>("PracticalExperience")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("RecruitmentPrice")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Religion")
                         .HasColumnType("nvarchar(max)");
@@ -276,23 +246,20 @@ namespace tafarrod.DAL.Migrations
             modelBuilder.Entity("tafarrod.DAL.Entities.Worker", b =>
                 {
                     b.HasOne("tafarrod.DAL.Entities.Nationality", "Nationality")
-                        .WithMany("workers")
+                        .WithMany()
                         .HasForeignKey("NationalityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("tafarrod.DAL.Entities.Occupation", "Occupation")
                         .WithMany()
-                        .HasForeignKey("OccupationId");
+                        .HasForeignKey("OccupationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Nationality");
 
                     b.Navigation("Occupation");
-                });
-
-            modelBuilder.Entity("tafarrod.DAL.Entities.Nationality", b =>
-                {
-                    b.Navigation("workers");
                 });
 
             modelBuilder.Entity("tafarrod.DAL.Entities.Worker", b =>

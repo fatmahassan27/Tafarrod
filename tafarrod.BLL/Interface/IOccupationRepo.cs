@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using tafarrod.DAL.Entities;
 
-namespace tafarrod.DAL.Enums
+namespace tafarrod.BLL.Interface
 {
-    public enum Religion
+    public interface IOccupationRepo :IGenericRepo<Occupation>
     {
-        Muslim=1, Christian , Undefined
     }
 }

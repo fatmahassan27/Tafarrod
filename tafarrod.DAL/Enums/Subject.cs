@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace tafarrod.DAL.Enums
 {
-    public enum Religion
+    public enum Subject
     {
-        Muslim=1, Christian , Undefined
+        complaint =1, suggestion
     }
 }

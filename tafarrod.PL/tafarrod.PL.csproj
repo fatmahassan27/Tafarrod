@@ -20,4 +20,9 @@
     <ProjectReference Include="..\tafarrod.BLL\tafarrod.BLL.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Uploads\Images\" />
+    <Folder Include="Uploads\CVs\" />
+  </ItemGroup>
+
 </Project>

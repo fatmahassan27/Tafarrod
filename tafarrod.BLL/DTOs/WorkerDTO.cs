@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,17 +12,20 @@ namespace tafarrod.BLL.ViewModel
 {
     public class WorkerDTO
     {
-        public int Id { get; set; }
+        public int? Id { get; set; }
         public string Name { get; set; }
-        public string Nationality { get; set; }
-        public string Image { get; set; }
-        public byte[] CV { get; set; } // Binary data for file storage
-        public string Occupation { get; set; } //elmhna
+        public int NationalityId { get; set; }
+        public string? NationalityName { get; set; }
+         
+        public long? RecruitmentPrice {  get; set; }
+        public IFormFile Image { get; set; }
+        public IFormFile CV { get; set; } 
+        public int? OccupationId { get; set; } //elmhna
+        public string? OccupationName { get; set; }
         public Religion? Religion { get; set; }
-        public long RecruitmentPrice { get; set; }
+        public int Age { get; set; }
         public MaritalStatus MaritalStatus { get; set; }
         public PracticalExperience PracticalExperience { get; set; }
-        public int ContractId { get; set; }
-        public Contract Contract { get; set; }
+        public int? ContractId { get; set; }
     }
 }

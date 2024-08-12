@@ -30,7 +30,12 @@ namespace tafarrod.PL
             builder.Services.AddScoped<IUnitOfWork,UnitOfWork>();
             builder.Services.AddScoped<IWorkerRepo,WorkerRepo>();
             builder.Services.AddScoped<IUserRepo, UserRepo>();
-           
+            builder.Services.AddScoped<INationalityRepo, NationalityRepo>();
+            builder.Services.AddScoped<IOccupationRepo, OccupationRepo>();
+            builder.Services.AddScoped<IProblemRepo,ProblemRepo>();
+
+
+
 
 
             builder.Services.AddAuthorization(options =>
@@ -79,8 +84,7 @@ namespace tafarrod.PL
                     builder.WithOrigins("http://localhost:4200")
                       .AllowAnyMethod()
                       .AllowAnyHeader()
-                      .AllowCredentials()
-                      .SetIsOriginAllowed((host) => true);// Ensure credentials are allowed if using authentication
+                      .AllowCredentials();
 
                 });
 
@@ -99,6 +103,7 @@ namespace tafarrod.PL
             app.UseAuthentication();
             app.UseAuthorization();
 
+            app.UseStaticFiles(); // For serving static files
 
             app.MapControllers();
 

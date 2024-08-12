@@ -14,6 +14,9 @@ namespace tafarrod.BLL.UnitOfWork
         private readonly ApplicationDbContext dbContext;
         private IWorkerRepo workerRepo;
         private IUserRepo userRepo;
+        private INationalityRepo nationalityRepo;
+        private IOccupationRepo occupationRepo;
+        private IProblemRepo problemRepo;
         public UnitOfWork(ApplicationDbContext dbContext) 
         {
             this.dbContext = dbContext;
@@ -31,6 +34,29 @@ namespace tafarrod.BLL.UnitOfWork
             get
             {
                 return userRepo ??= new UserRepo(dbContext);
+            }
+        }
+
+        public INationalityRepo NationalityRepo
+        {
+            get
+            {
+                return nationalityRepo??= new NationalityRepo(dbContext);
+            }
+        }
+
+        public IOccupationRepo OccupationRepo
+        {
+            get {
+                return occupationRepo ??= new OccupationRepo(dbContext);    
+            }
+        }
+
+        public IProblemRepo ProblemRepo
+        {
+            get
+            {
+                return problemRepo ??= new ProblemRepo(dbContext);
             }
         }
 

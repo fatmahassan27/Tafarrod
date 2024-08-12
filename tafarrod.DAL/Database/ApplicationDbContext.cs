@@ -15,12 +15,17 @@ namespace tafarrod.DAL.Database
         {
 
         }
+        
         public DbSet<Worker> Workers { get; set; }
         public DbSet<Contract> Contracts { get; set; }
         public DbSet<Expenses> Expenses { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<Nationality> Nationalities { get; set; }
+        public DbSet<Occupation> Occupations { get; set; }
+        public DbSet<Problem> Problems { get;set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+           
             modelBuilder.Entity<Worker>()
             .Property(w => w.CV)
             .HasColumnType("VARBINARY(MAX)"); 
@@ -42,6 +47,13 @@ namespace tafarrod.DAL.Database
                 .HasConversion(
                     v => v.ToString(),
                     v => (PracticalExperience)Enum.Parse(typeof(PracticalExperience), v));
+
+            modelBuilder.Entity<Problem>()
+               .Property(w => w.Subject)
+               .HasConversion(
+                   v => v.ToString(),
+                   v => (Subject)Enum.Parse(typeof(Subject), v));
+
 
             base.OnModelCreating(modelBuilder);
         }

@@ -14,12 +14,17 @@ namespace tafarrod.DAL.Entities
         [Key,DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public string Name { get; set; }
-        public string Nationality { get; set; }
+
+        public int NationalityId { get; set; }
+        [ForeignKey("NationalityId")]
+        public Nationality Nationality { get; set; }
         public string Image {  get; set; }
-        public byte[] CV { get; set; } // Binary data for file storage
-        public string Occupation { get; set; } //elmhna
+        public string CV { get; set; } // Binary data for file storage
+        public int? OccupationId { get; set; } //elmhna
+        [ForeignKey("OccupationId")]
+        public Occupation? Occupation { get; set; }
         public Religion? Religion {  get; set; }
-       public long  RecruitmentPrice { get; set; }
+        public int Age {  get; set; }
         public MaritalStatus MaritalStatus { get; set; }
         public PracticalExperience PracticalExperience { get; set; }
         public int ContractId {  get; set; }

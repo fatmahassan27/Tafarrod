@@ -26,7 +26,15 @@ namespace tafarrod.BLL.Mapper
             //----------------------------------
             CreateMap<User, RegistrationDTO>();
             CreateMap<RegistrationDTO, User>();
-
+            //----------------------------------
+            CreateMap<Nationality, NationalityDTO>();
+            CreateMap<NationalityDTO, Nationality>();
+            //--------------------------------
+            CreateMap<Occupation,OccupationDTO>();
+            CreateMap<OccupationDTO, Occupation>();
+            //------------------------------------
+            CreateMap<Problem, ProblemDTO>();
+            CreateMap<ProblemDTO, Problem>();
 
 
 
