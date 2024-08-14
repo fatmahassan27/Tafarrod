@@ -38,9 +38,9 @@ namespace tafarrod.PL.Controllers
                     var user = mapper.Map<User>(model);
                     await unitOfWork.UserRepo.CreateAsync(user);
                     await unitOfWork.saveAsync();
-                    return Ok("User Register Successfully");
+                    return Ok(model);
                 }
-                     return BadRequest(ModelState);
+                     return BadRequest(model);
             }
             catch(Exception ex)
             {

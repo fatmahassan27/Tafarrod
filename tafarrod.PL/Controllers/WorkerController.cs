@@ -91,7 +91,7 @@ namespace tafarrod.PL.Controllers
                     var Worker = mapper.Map<Worker>(worker);
                     await unitOfWork.WorkerRepo.CreateAsync(Worker);
                     await unitOfWork.saveAsync();
-                    return Ok("Worker add Successfully");
+                    return Ok(worker);
 
                 }
                 return BadRequest(worker);
