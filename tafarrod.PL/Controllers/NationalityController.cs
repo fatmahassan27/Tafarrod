@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using tafarrod.BLL.DTOs;
@@ -40,6 +41,7 @@ namespace tafarrod.PL.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles ="Admin")]
         public async Task<IActionResult> Create([FromBody] NationalityDTO nationality)
         {
             try
@@ -53,6 +55,53 @@ namespace tafarrod.PL.Controllers
                 }
                 return BadRequest(nationality);
             }catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An error occurred", details = ex.Message });
+
+            }
+        }
+
+        [HttpPut("{id:int}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Edit(int id , [FromBody] NationalityDTO nationality)
+        {
+            try
+            {
+                var existCountry = await unitOfWork.NationalityRepo.GetByIdAsync(id);
+                if(existCountry == null)
+                {
+                    return NotFound();
+                }
+                if(!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+                mapper.Map(nationality,existCountry);
+               await  unitOfWork.NationalityRepo.UpdateAsync(existCountry);
+                await unitOfWork.saveAsync();
+                return Ok("Updated successfully");
+            }catch(Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An error occurred", details = ex.Message });
+
+            }
+        }
+        [HttpDelete("{id:int}")]
+        [Authorize(Roles ="Admin")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            try
+            {
+                var existCountry = await unitOfWork.NationalityRepo.GetByIdAsync(id);
+                if(existCountry !=null)
+                {
+                    await unitOfWork.NationalityRepo.DeleteAsync(id);
+                    await unitOfWork.saveAsync();
+                    return Ok(new { message = "Deleted successfully" });
+                }
+                return NotFound(new { message = $"Nationality with ID {id} not found" });
+            }
+            catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An error occurred", details = ex.Message });
 

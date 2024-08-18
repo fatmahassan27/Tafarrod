@@ -17,6 +17,9 @@ namespace tafarrod.BLL.UnitOfWork
         private INationalityRepo nationalityRepo;
         private IOccupationRepo occupationRepo;
         private IProblemRepo problemRepo;
+        private IRoleRepo roleRepo;
+        private IUserRoleRepo userRole;
+        private ICallCenterRepo callCenterRepo;
         public UnitOfWork(ApplicationDbContext dbContext) 
         {
             this.dbContext = dbContext;
@@ -57,6 +60,30 @@ namespace tafarrod.BLL.UnitOfWork
             get
             {
                 return problemRepo ??= new ProblemRepo(dbContext);
+            }
+        }
+
+        public IRoleRepo RoleRepo
+        {
+            get
+            {
+                return roleRepo ??= new RoleRepo(dbContext);
+            }
+        }
+
+        public IUserRoleRepo UserRoleRepo
+        {
+            get
+            {
+                return userRole ?? new UserRoleRepo(dbContext);
+            }
+        }
+
+        public ICallCenterRepo CallCenterRepo
+        {
+            get
+            {
+                return callCenterRepo ??= new CallCenterRepo(dbContext);    
             }
         }
 

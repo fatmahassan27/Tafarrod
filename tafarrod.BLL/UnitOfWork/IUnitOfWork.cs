@@ -14,6 +14,9 @@ namespace tafarrod.BLL.UnitOfWork
         INationalityRepo NationalityRepo { get; }
         IOccupationRepo OccupationRepo { get; } 
         IProblemRepo ProblemRepo { get; }
+        IRoleRepo RoleRepo { get; }
+        IUserRoleRepo UserRoleRepo { get; }
+        ICallCenterRepo CallCenterRepo { get; }
         Task<int> saveAsync();
 
 

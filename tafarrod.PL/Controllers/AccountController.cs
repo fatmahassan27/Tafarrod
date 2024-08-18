@@ -36,15 +36,23 @@ namespace tafarrod.PL.Controllers
                 if(ModelState.IsValid)
                 {
                     var user = mapper.Map<User>(model);
+                    var roleName= model.Role;
+                    var role = await unitOfWork.RoleRepo.GetByNameAsync(roleName);
+                    var userRole = new UserRole
+                    {
+                        User = user,
+                        Role = role
+                    };
                     await unitOfWork.UserRepo.CreateAsync(user);
+                    await unitOfWork.UserRoleRepo.CreateAsync(userRole);
                     await unitOfWork.saveAsync();
                     return Ok(model);
                 }
-                     return BadRequest(model);
+                     return BadRequest(ModelState);
             }
             catch(Exception ex)
             {
-                Console.WriteLine(ex.Message); // For debugging, consider using a logging framework
+                Console.WriteLine(ex.Message); 
                 return BadRequest(ex.Message);
 
             }

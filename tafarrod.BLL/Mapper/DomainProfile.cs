@@ -35,6 +35,9 @@ namespace tafarrod.BLL.Mapper
             //------------------------------------
             CreateMap<Problem, ProblemDTO>();
             CreateMap<ProblemDTO, Problem>();
+            //-----------------------------------
+            CreateMap<CallCenter, CallCenterDTO>();
+            CreateMap<CallCenterDTO, CallCenter>();
 
 
 

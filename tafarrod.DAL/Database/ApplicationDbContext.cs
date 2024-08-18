@@ -23,6 +23,9 @@ namespace tafarrod.DAL.Database
         public DbSet<Nationality> Nationalities { get; set; }
         public DbSet<Occupation> Occupations { get; set; }
         public DbSet<Problem> Problems { get;set; }
+        public DbSet<UserRole> UserRoles { get; set; }
+        public DbSet<Role> Roles { get; set; }
+        public DbSet<CallCenter> CallCenters { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
            
@@ -54,6 +57,16 @@ namespace tafarrod.DAL.Database
                    v => v.ToString(),
                    v => (Subject)Enum.Parse(typeof(Subject), v));
 
+            // Define the many-to-many relationship between User and Role through UserRole
+            modelBuilder.Entity<UserRole>()
+                .HasOne(ur => ur.User)
+                .WithMany(u => u.UserRoles)
+                .HasForeignKey(ur => ur.UserId);
+
+            modelBuilder.Entity<UserRole>()
+                .HasOne(ur => ur.Role)
+                .WithMany(r => r.UserRoles)
+                .HasForeignKey(ur => ur.RoleId);
 
             base.OnModelCreating(modelBuilder);
         }

@@ -25,5 +25,6 @@ namespace tafarrod.DAL.Entities
         public string UserName {  get; set; }
         [Required]
         public string Password {  get; set; }
+        public ICollection<UserRole> UserRoles { get; set; }
     }
 }
