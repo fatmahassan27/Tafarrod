@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.IO;
 using tafarrod.BLL.UnitOfWork;
 using tafarrod.BLL.ViewModel;
 using tafarrod.DAL.Entities;
@@ -52,49 +53,28 @@ namespace tafarrod.PL.Controllers
         //}
 
         [HttpPost]
-        public async Task<IActionResult> CreateWorker([FromForm] WorkerDTO worker)
+        public async Task<IActionResult> CreateWorker([FromForm] WorkerDTO workerDTO)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    var baseUploadPath = Path.Combine(Directory.GetCurrentDirectory(), "Uploads");
-                    var imagesPath = Path.Combine(baseUploadPath, "Images");
-                    var cvsPath = Path.Combine(baseUploadPath, "CVs");
-                    if (!Directory.Exists(imagesPath))
-                    {
-                        Directory.CreateDirectory(imagesPath);
+                    var imagePath = SaveFile(workerDTO.Image,"Images");
+                    var cvPath = SaveFile(workerDTO.CV,"CVs");
+                  
+                 
 
-                    }
-                    if (!Directory.Exists(cvsPath))
-                    {
-                        Directory.CreateDirectory(cvsPath);
-                    }
-                    if (worker.Image !=null)
-                    {
-                        var imagePath = Path.Combine(imagesPath, Path.GetFileName(worker.Image.FileName));
-                        using (var stream = new FileStream(imagePath,FileMode.Create))
-                        {
-                            await worker.Image.CopyToAsync(stream);
-                        }
-
-                    }
-                    if(worker.CV !=null)
-                    {
-                        var cvPath = Path.Combine(cvsPath, Path.GetFileName(worker.CV.FileName));
-                        using (var stream = new FileStream(cvPath,FileMode.Create))
-                        {
-                            await worker.CV.CopyToAsync(stream);
-                        }
-
-                    }
-                    var Worker = mapper.Map<Worker>(worker);
-                    await unitOfWork.WorkerRepo.CreateAsync(Worker);
+                  
+                    var worker = mapper.Map<Worker>(workerDTO);
+                    // Set file paths in the entity
+                    worker.Image = imagePath;
+                    worker.CV = cvPath;
+                    await unitOfWork.WorkerRepo.CreateAsync(worker);
                     await unitOfWork.saveAsync();
                     return Ok(worker);
 
                 }
-                return BadRequest(worker);
+                return BadRequest(ModelState);
             }
             catch (Exception ex)
             {
@@ -107,17 +87,28 @@ namespace tafarrod.PL.Controllers
 
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<WorkerDTO>>> GetAll()
+        public async Task<ActionResult<IEnumerable<WorkerDTO>>> GetAllWorkers()
         {
             try
             {
-                var Worker = await unitOfWork.WorkerRepo.GetAll();
-                var WorkerDTO = mapper.Map<IEnumerable<WorkerDTO>>(Worker);
-                if (WorkerDTO != null)
+                var workers = await unitOfWork.WorkerRepo.GetAll();
+
+                if (workers == null || !workers.Any())
                 {
-                    return Ok(WorkerDTO);
+                    return NotFound(new { message = "No workers found" });
                 }
-                return BadRequest();
+
+                var workerDto = mapper.Map<IEnumerable<WorkerDTO>>(workers);
+                return Ok(workerDto);
+
+                //var workers = await unitOfWork.WorkerRepo.GetAll();
+                //if (workers != null)
+                //{
+                //    var WorkersDTO = mapper.Map<IEnumerable<WorkerDTO>>(workers);
+
+                //    return Ok(WorkersDTO);
+                //}
+                //return NotFound(new { message = "No workers found" });
             }
             catch (Exception ex)
             {
@@ -126,7 +117,7 @@ namespace tafarrod.PL.Controllers
             }
         }
 
-        [HttpGet("ByNationality/{NId:int}")]
+        [HttpGet("ByNationality/{NId}")]
         public async Task<ActionResult<IEnumerable<WorkerDTO>>> GetByNationalityId(int NId)
         {
             try
@@ -147,7 +138,7 @@ namespace tafarrod.PL.Controllers
             }
         }
 
-        [HttpGet("ByOccupation/{OId:int}")]
+        [HttpGet("ByOccupation/{OId}")]
         public async Task<ActionResult<IEnumerable<WorkerDTO>>> GetByOccupationId(int OId)
         {
             try
@@ -244,6 +235,48 @@ namespace tafarrod.PL.Controllers
             }
         }
 
+
+        [HttpDelete]
+        public async Task<IActionResult> Delete(int id)
+        {
+            try
+            {
+                var workerExist = await unitOfWork.WorkerRepo.GetByIdAsync(id);
+                if(workerExist!=null)
+                {
+                    await unitOfWork.WorkerRepo.DeleteAsync(id);
+                    await unitOfWork.saveAsync();
+                    return Ok(new {Message="Worker Deleted Successfully"});
+                }
+                return NotFound();
+            }catch(Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An error occurred ", details = ex.Message });
+
+            }
+        }
+
+
+        private string SaveFile(IFormFile file,string folderName)
+        {
+            if(file==null || file.Length==0)
+            {
+                return null;
+            }
+            var baseUploadPath = Path.Combine(Directory.GetCurrentDirectory(), "Uploads");
+            var folderPath = Path.Combine(baseUploadPath, folderName);
+            if (!Directory.Exists(folderPath))
+            {
+                Directory.CreateDirectory(folderPath);
+            }
+            var filePath = Path.Combine(folderPath, Path.GetFileName(file.FileName));
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                file.CopyTo(stream);
+            }
+
+            return filePath;
+        }
     }
 }
 

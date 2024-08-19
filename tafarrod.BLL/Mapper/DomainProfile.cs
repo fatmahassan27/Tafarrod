@@ -15,8 +15,8 @@ namespace tafarrod.BLL.Mapper
     {
         public DomainProfile()
         {
-            CreateMap<Worker,WorkerDTO>();
             CreateMap<WorkerDTO, Worker>();
+            CreateMap<Worker, WorkerDTO>();
             //--------------------------------
             CreateMap<Contract, ContractDTO>();
             CreateMap<ContractDTO, Contract>();

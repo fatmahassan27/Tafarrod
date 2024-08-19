@@ -16,8 +16,6 @@ namespace tafarrod.BLL.ViewModel
         public string Name { get; set; }
         public int NationalityId { get; set; }
         public string? NationalityName { get; set; }
-         
-        public long? RecruitmentPrice {  get; set; }
         public IFormFile Image { get; set; }
         public IFormFile CV { get; set; } 
         public int? OccupationId { get; set; } //elmhna
@@ -27,5 +25,7 @@ namespace tafarrod.BLL.ViewModel
         public MaritalStatus MaritalStatus { get; set; }
         public PracticalExperience PracticalExperience { get; set; }
         public int? ContractId { get; set; }
+        public long? RecruitmentPrice { get; set; }
+
     }
 }

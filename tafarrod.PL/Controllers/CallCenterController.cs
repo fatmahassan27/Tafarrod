@@ -62,7 +62,7 @@ namespace tafarrod.PL.Controllers
 
             }
         }
-        [HttpPut("{id :int}")]
+        [HttpPut("{id}")]
         [Authorize(Roles = "Admin")]
 
         public async Task<ActionResult> Edit(int id,[FromBody] CallCenterDTO callCenter)
@@ -120,7 +120,7 @@ namespace tafarrod.PL.Controllers
             }
         }
 
-        [HttpDelete("{id:int}")]
+        [HttpDelete("{id}")]
         [Authorize(Roles = "Admin")]
 
         public async Task<IActionResult> Delete(int id)
