@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Azure.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -7,6 +8,8 @@ using tafarrod.BLL.UnitOfWork;
 using tafarrod.BLL.ViewModel;
 using tafarrod.DAL.Entities;
 using tafarrod.DAL.Enums;
+using System.IO;
+using System;
 
 namespace tafarrod.PL.Controllers
 {
@@ -53,22 +56,26 @@ namespace tafarrod.PL.Controllers
         //}
 
         [HttpPost]
-        public async Task<IActionResult> CreateWorker([FromForm] WorkerDTO workerDTO)
+        public async Task<IActionResult> CreateWorker([FromBody] WorkerDTO workerDTO)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    var imagePath = SaveFile(workerDTO.Image,"Images");
-                    var cvPath = SaveFile(workerDTO.CV,"CVs");
-                  
-                 
 
-                  
+
+                    //string imageBase64 = await FileConverter.ConvertToBase64Async(workerDTO.Image);
+                    //string cvBase64 = await FileConverter.ConvertToBase64Async(workerDTO.CV);
+
+                    string imagePath = SaveFile(workerDTO.Image, "Images");
+                    string cvPath = SaveFile(workerDTO.CV, "CVs");
+                    // Set the Base64 strings in the entity
+
                     var worker = mapper.Map<Worker>(workerDTO);
-                    // Set file paths in the entity
                     worker.Image = imagePath;
                     worker.CV = cvPath;
+
+
                     await unitOfWork.WorkerRepo.CreateAsync(worker);
                     await unitOfWork.saveAsync();
                     return Ok(worker);
@@ -83,9 +90,6 @@ namespace tafarrod.PL.Controllers
             }
 
         }
-
-
-
         [HttpGet]
         public async Task<ActionResult<IEnumerable<WorkerDTO>>> GetAllWorkers()
         {
@@ -101,14 +105,7 @@ namespace tafarrod.PL.Controllers
                 var workerDto = mapper.Map<IEnumerable<WorkerDTO>>(workers);
                 return Ok(workerDto);
 
-                //var workers = await unitOfWork.WorkerRepo.GetAll();
-                //if (workers != null)
-                //{
-                //    var WorkersDTO = mapper.Map<IEnumerable<WorkerDTO>>(workers);
-
-                //    return Ok(WorkersDTO);
-                //}
-                //return NotFound(new { message = "No workers found" });
+               
             }
             catch (Exception ex)
             {
@@ -257,26 +254,49 @@ namespace tafarrod.PL.Controllers
         }
 
 
-        private string SaveFile(IFormFile file,string folderName)
+        private string SaveFile(string base64String, string folderName)
         {
-            if(file==null || file.Length==0)
-            {
+            if (string.IsNullOrEmpty(base64String))
                 return null;
-            }
+            byte[] fileBytes = Convert.FromBase64String(base64String);
+            // Define the file paths
+
             var baseUploadPath = Path.Combine(Directory.GetCurrentDirectory(), "Uploads");
             var folderPath = Path.Combine(baseUploadPath, folderName);
             if (!Directory.Exists(folderPath))
             {
                 Directory.CreateDirectory(folderPath);
             }
-            var filePath = Path.Combine(folderPath, Path.GetFileName(file.FileName));
-            using (var stream = new FileStream(filePath, FileMode.Create))
+            string fileName = Guid.NewGuid().ToString() + ".png"; // or the appropriate file extension
+
+            var filePath = Path.Combine(folderPath, fileName);
+            try
             {
-                file.CopyTo(stream);
+            // Save the bytes to the file
+              System.IO.File.WriteAllBytes(filePath, fileBytes);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error writing file: {ex.Message}", ex);
             }
 
             return filePath;
         }
+
+
+        private async Task<string> ConvertToBase64Async(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+                return null;
+
+            using (var memoryStream = new MemoryStream())
+            {
+                await file.CopyToAsync(memoryStream);
+                var fileBytes = memoryStream.ToArray();
+                return Convert.ToBase64String(fileBytes);
+            }
+        }
+
     }
 }
 

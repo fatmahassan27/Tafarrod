@@ -16,8 +16,9 @@ namespace tafarrod.BLL.ViewModel
         public string Name { get; set; }
         public int NationalityId { get; set; }
         public string? NationalityName { get; set; }
-        public IFormFile Image { get; set; }
-        public IFormFile CV { get; set; } 
+        public string Image { get; set; }
+        public string CV { get; set; }
+       
         public int? OccupationId { get; set; } //elmhna
         public string? OccupationName { get; set; }
         public Religion? Religion { get; set; }

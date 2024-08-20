@@ -19,7 +19,7 @@ namespace tafarrod.DAL.Entities
         [ForeignKey("NationalityId")]
         public Nationality Nationality { get; set; }
         public string Image {  get; set; }
-        public string CV { get; set; } // Binary data for file storage
+        public string CV { get; set; } 
         public int? OccupationId { get; set; } //elmhna
         [ForeignKey("OccupationId")]
         public Occupation? Occupation { get; set; }

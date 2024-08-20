@@ -46,7 +46,7 @@ namespace tafarrod.PL.Controllers
                     await unitOfWork.UserRepo.CreateAsync(user);
                     await unitOfWork.UserRoleRepo.CreateAsync(userRole);
                     await unitOfWork.saveAsync();
-                    return Ok(model);
+                    return Ok(new {model});
                 }
                      return BadRequest(ModelState);
             }

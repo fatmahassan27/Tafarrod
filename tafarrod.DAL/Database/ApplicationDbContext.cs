@@ -29,9 +29,7 @@ namespace tafarrod.DAL.Database
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
            
-            modelBuilder.Entity<Worker>()
-            .Property(w => w.CV)
-            .HasColumnType("VARBINARY(MAX)"); 
+           
 
             modelBuilder.Entity<Worker>()
                 .Property(w => w.Religion)

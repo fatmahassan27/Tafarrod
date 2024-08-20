@@ -15,9 +15,9 @@ namespace tafarrod.BLL.Mapper
     {
         public DomainProfile()
         {
-            CreateMap<WorkerDTO, Worker>();
-            CreateMap<Worker, WorkerDTO>();
-            //--------------------------------
+            CreateMap<WorkerDTO, Worker>().ReverseMap();
+            CreateMap<Worker, WorkerDTO>().ReverseMap();
+            //----------------------------------
             CreateMap<Contract, ContractDTO>();
             CreateMap<ContractDTO, Contract>();
             //---------------------------------
